@@ -51,10 +51,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, message: data.message || "Login gagal" }
       }
 
-      // Mapping data dari Laravel ke tipe User
       const loggedInUser: User = {
         id: String(data.user.id),
-        username: data.user.nik,
+        username: data.user.username,
         nama: data.user.name,
         role: data.user.role === "rw" ? "super-admin" : data.user.role === "rt" ? "admin" : "warga",
         rt: data.user.rt ?? undefined,
@@ -62,12 +61,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         nik: data.user.nik,
       }
 
-      // Simpan token & user ke sessionStorage
       sessionStorage.setItem(TOKEN_KEY, data.token)
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(loggedInUser))
       setUser(loggedInUser)
 
-      // Arahkan sesuai role
       const target =
         loggedInUser.role === "super-admin"
           ? "/super-admin/dashboard"
@@ -117,7 +114,6 @@ export function useAuth() {
   return ctx
 }
 
-// Helper untuk fetch API dengan token
 export function getToken() {
   return sessionStorage.getItem(TOKEN_KEY)
 }
